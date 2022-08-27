@@ -3,64 +3,65 @@
 #       using :
 #           python 3.10
 #           pygame 2.1.2
-#       Created by Okumura Naofumi
+#       Created by FCA22020001
 #=========================================================#
 
-# System import
+# システムインポート
 import pygame
 
-# File import
+# ファイルインポート
 from settings import *
 from game import Game
 
-# Init
+# ゲームの初期化
 pygame.init()
 
-# Create Game Window
+# ゲームのウィンドウ表示と設定
 screen = pygame.display.set_mode((screen_width, screen_height))
 
-# Game Window Title
+# ゲームウィンドウの左上の名前
 pygame.display.set_caption("Shooting Game ver2")
 
-# Set up for FPS
-# FPS -> set FPS = 60 in settings.py
+# FPSの設定
+# 時間ベースのFPS管理
 clock = pygame.time.Clock()
 
-# Loading Game
+# ゲームの読み込み
 game = Game()
 
-# Main Loop Space ==========================================
+# メインループ ==================================================
 
-# If game is run
+# ゲームが起動されている状態
 run = True
 
-# Information log in cmd prompt
-print(lt1)
-print(lt2)
-print(lt3)
+# デバッグウィンドウの方にキーコンフィグ等を表示する
+# print(lt1)
+# print(lt2)
+# print(lt3)
 
-while run:  # If keeping Run Game
+while run:  # ゲームが起動され続けている間の処理(run = trueの間)
 
-    # Set Background Color
+    # 背景画像のさらに後ろの色を黒で塗りつぶす
     screen.fill(BLACK)
 
-    # Run Game
+    # ゲームを実行
     game.run()
 
-    # Getting Events
+    # イベントを所得
     for event in pygame.event.get():
-        # Click "X" button
-        if event.type == pygame.QUIT: # If click "x" button
-            run = False # Game Quit and go without loop
-        # Push "esc" key
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE: # If get "esc" key
-                run = False # Game Quit and go without loop
-    
-    # Update Display(or Window)
+        # バツボタンを押したとき
+        if event.type == pygame.QUIT:
+            run = False  # 実行をFalseに設定する
+        # エスケープキーを押したとき
+        if event.type == pygame.KEYDOWN:  # キーダウンのイベントを所得
+            if event.key == pygame.K_ESCAPE:
+                run = False  # 実行をFalseにする
+
+    # ディスプレイの更新
     pygame.display.update()
+    # FPSの設定
     clock.tick(FPS)
 
-#===========================================================
+# ===========================================================
 
-pygame.quit() # If without loop(while run:) game is end
+pygame.quit()  # ループを抜け出したときにゲームを終了する

@@ -3,98 +3,110 @@
 #       using :
 #           python 3.10
 #           pygame 2.1.2
-#       Created by Okumura Naofumi
+#       Created by FCA22020001
 #=========================================================#
 
-# System import
+# システムインポート
 import pygame
 import random
 
-# File import
+# ファイルインポート
 from settings import *
 from player import Player
 from enemy import Enemy
 from support import draw_text
 
-# Game Core ===============================================
-class Game: # Create game class
+# ゲームのコア ==================================================
+
+
+class Game:  # ゲームのメインの処理クラス
 
     def __init__(self):
+        # 画面の描画関連を所得
         self.screen = pygame.display.get_surface()
 
-        # Create Group = line38
+        # グループ作成 line = 38
         self.create_group()
 
-        # Player
+        # プレイヤーを配置
         self.player = Player(self.player_group, 300, 500, self.enemy_group)
 
-        # Enemy
+        # エネミーのタイマーを0にする(フレームレート基準)
         self.timer = 0
 
-        # Background images
-        self.pre_bg_img = pygame.image.load(image_bg) # Set background image
-        self.bg_img = pygame.transform.scale(self.pre_bg_img, (screen_width, screen_height)) # Stretch background image
-        self.bg_y = 0 # Background image's default index
-        self.scroll_speed = 0.5 # Backgrounds image's scroll speed
+        # 背景画像の設定
+        self.pre_bg_img = pygame.image.load(image_bg)  # 画像の読み込み
+        self.bg_img = pygame.transform.scale(
+            self.pre_bg_img, (screen_width, screen_height))  # 画像をウィンドウのサイズにストレッチさせる
+        self.bg_y = 0  # デフォルトのイメージ原点
+        self.scroll_speed = 0.5  # 背景のスクロールスピード
 
-        # Music
-        pygame.mixer.music.load('assets/sounds/bgsong.mp3')
-        pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.3)
+        # 音楽
+        pygame.mixer.music.load('assets/sounds/bgsong.mp3')  # 音楽の読み込み
+        pygame.mixer.music.play(-1)  # ループ再生する
+        pygame.mixer.music.set_volume(0.3)  # 音量を30%で再生する
 
-        # Gameover
+        # ゲームオーバー、死なない限りFalse
         self.game_over = False
-    
-    # Create Group
+
+    # グループ作成
     def create_group(self):
-        self.player_group = pygame.sprite.GroupSingle() # 1 player
-        self.enemy_group = pygame.sprite.Group()    # Some Enemy
+        # 自機は1人なのでGroupSingleで1体専用のグループを作成
+        self.player_group = pygame.sprite.GroupSingle()
+        self.enemy_group = pygame.sprite.Group()    # エネミーグループを通常のグループ(複数存在可)で作成
 
-    # Create Enemy
+    # エネミーの生成
     def create_enemy(self):
-        self.timer += 1
-        if self.timer > 50: # After 50 flame
-            enemy = Enemy(self.enemy_group, random.randint(50, 550), 0, self.player.bullet_group) # Summon enemy limited random place ((x,x) = (50,550), y = 0)
-            self.timer = 0
-    
-    # Death action
+        self.timer += 1  # エネミーのタイマーを+1していく
+        if self.timer > 50:  # タイマーが50を超えたら
+            enemy = Enemy(self.enemy_group, random.randint(
+                50, 550), 0, self.player.bullet_group)  # エネミーをｘ50~550、ｙ0の間でランダム生成
+            self.timer = 0  # 敵を生成したらタイマーを0にセット
+
+    # 自機の死亡アクション
     def player_death(self):
-        if len(self.player_group) == 0:
-            self.game_over = True
-            draw_text(self.screen, 'game over', screen_width // 2, screen_height // 2, 75, RED)
-            draw_text(self.screen, 'press R KEY to reset', screen_width // 2, screen_height // 2 + 100, 50, RED)
+        if len(self.player_group) == 0:  # 自機の数が０になったら
+            self.game_over = True  # ゲームオーバー処理をTrueにする
+            # リスタートを促すテキストを表示
+            draw_text(self.screen, 'game over', screen_width //
+                      2, screen_height // 2, 75, RED)
+            draw_text(self.screen, 'press R KEY to reset',
+                      screen_width // 2, screen_height // 2 + 100, 50, RED)
 
-    # Reset the game
+    # リスタートの処理
     def reset(self):
-        key = pygame.key.get_pressed()
-        if self.game_over and key[pygame.K_r]:
-            self.player = Player(self.player_group, 300, 500, self.enemy_group)
-            self.enemy_group.empty()
-            self.game_over = False
-    
-    # Scroll Background
-    def scroll_bg(self):
-        self.bg_y = (self.bg_y + self.scroll_speed) % screen_height # (BackgroundStartPoint + 0.3) / WindowY
-        self.screen.blit(self.bg_img,(0, self.bg_y - screen_height)) # Image 1 move to -600 ~ -1
-        self.screen.blit(self.bg_img, (0, self.bg_y)) # Image 2 move to 0 ~ 599
+        if self.game_over == True:  # ゲームオーバー処理がTrueのとき
+            key = pygame.key.get_pressed()  # キーボード入力を検出
+            if self.game_over and key[pygame.K_r]:  # Rキーが押されたときに
+                self.player = Player(self.player_group, 300,
+                                     500, self.enemy_group)  # 自機を再配置
+                self.enemy_group.empty()  # エネミーの数をemptyにする
+                self.game_over = False  # ゲームオーバー処理をFalseに戻す
 
-    # Do the Game
+    # 背景のスクロール処理
+    def scroll_bg(self):
+        # 背景の原点を(原点+スクロールスピード)%スクリーンの縦で変更する
+        self.bg_y = (self.bg_y + self.scroll_speed) % screen_height
+        # 下の背景を0 ~ -599まで移動させる
+        self.screen.blit(self.bg_img, (0, self.bg_y - screen_height))
+        self.screen.blit(self.bg_img, (0, self.bg_y))  # 上の背景を+600 ~ 0まで移動させる
+
+    # ゲームの実行
     def run(self):
-        # Do scroll
+        # 背景のスクロールの実行
         self.scroll_bg()
 
-        # Summon enemy
+        # エネミーの生成の実行
         self.create_enemy()
 
-        # Death actions
+        # 自機の死亡時アクションの実行
         self.player_death()
         self.reset()
 
-        # Display groups and update
+        # グループの描画と更新
         self.player_group.draw(self.screen)
         self.player_group.update()
         self.enemy_group.draw(self.screen)
         self.enemy_group.update()
 
-#==========================================================
-
+# ==========================================================
