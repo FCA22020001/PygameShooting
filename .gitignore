@@ -1,0 +1,5 @@
+# Chache ignore
+/__[Pp]ycache__/
+
+# vs ignore
+/.[Vv]s/
