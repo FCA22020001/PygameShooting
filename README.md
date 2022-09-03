@@ -24,22 +24,23 @@ Download release ver0.2.0 and double-click main.exe.
     ```py
     movement.py
     import pygame
+    def input(self):
+        key = pygame.key.get_pressed()
+        # 上下移動
+            if key[pygame.K_w]:
+                self.direction.y = -1  # ｗが押されたときにyを-1し続ける
+            elif key[pygame.K_s]:
+                self.direction.y = +1  # ｓが押されたときにyを+1し続ける
+            else:
+                self.direction.y = 0  # 何も入力がなければ何もしない
 
-    # 上下移動
-        if key[pygame.K_w]:
-            self.direction.y = -1  # ｗが押されたときにyを-1し続ける
-        elif key[pygame.K_s]:
-            self.direction.y = +1  # ｓが押されたときにyを+1し続ける
-        else:
-            self.direction.y = 0  # 何も入力がなければ何もしない
-
-        # 左右移動
-        if key[pygame.K_a]:
-            self.direction.x = -2  # aが押されたときにⅹを-2し続ける
-        elif key[pygame.K_d]:
-            self.direction.x = +2  # dが押されたときにxを+2し続ける
-        else:
-            self.direction.x = 0  # 何も入力がなければ何もしない
+            # 左右移動
+            if key[pygame.K_a]:
+                self.direction.x = -2  # aが押されたときにⅹを-2し続ける
+            elif key[pygame.K_d]:
+                self.direction.x = +2  # dが押されたときにxを+2し続ける
+            else:
+                self.direction.x = 0  # 何も入力がなければ何もしない
     ```
     - settingsは種類ごとに分ける
     ```py
