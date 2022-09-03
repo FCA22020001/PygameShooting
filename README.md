@@ -26,7 +26,7 @@ Download release ver0.2.0 and double-click main.exe.
     import pygame
     def input(self):
         key = pygame.key.get_pressed()
-        # 上下移動
+            # 上下移動
             if key[pygame.K_w]:
                 self.direction.y = -1  # ｗが押されたときにyを-1し続ける
             elif key[pygame.K_s]:
